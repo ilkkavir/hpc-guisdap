@@ -1,6 +1,6 @@
-function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,hdf5)
+function jobs = runELSPECbatch(gfdfile,cluster,clusterpaths)
 %
-% run GUISDAP as batch jobs in a cluster
+% run ELSPEC as batch jobs in a cluster
 %
 % IV 2022
 %
@@ -43,14 +43,8 @@ function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,hdf5)
         % End of day + burnin (also in the end for quality control)
         t2new = dateshift(t1new+hours(23),'end','day') + minutes(overlap_minutes);
         disp([t1new t2new])
-        
         % output directory name
         dirname = fullfile(result_path,[ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ])
-
-        % input directory name for hdf5 files
-        if hdf5
-            hdf5ddir = [fullfile(data_path,datestr(t1new+diff([t1new,t2new])/2 ,'yyyymmdd')) filesep];
-        end
 
         % read the gfd file as a string array
         gfd_str = readlines(gfdfile);    
@@ -72,19 +66,11 @@ function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,hdf5)
                     gfd_str(iline) = string(['result_path=','''',dirname,'''']);
                 end
             end
-            % hdf5 input data are in daily directories (with sufficient overlap)
-            if hdf5
-                if length(teststr)>=9
-                    if teststr(1:9)=='data_path'
-                        gfd_str(iline) = string(['data_path=','''',hdf5ddir,'''']);
-                    end
-                end
-            end
             iline = iline + 1;
         end
         
         
-        jobs(ijob) = batch(cluster,@runGUISDAPremote,1,{gfd_str,dirname,sitestr},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        jobs(ijob) = batch(cluster,@runELSPECremote,1,{gfd_str,dirname,sitestr},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
 
         % increment the job counter
         ijob = ijob + 1;

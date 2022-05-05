@@ -1,8 +1,10 @@
-function success = runGUISDAPpuhti(gfd_str,dirname)
+function success = runGUISDAPremote(gfd_str,dirname,radar)
 %
-% success = runGUISDAPpuhti(gfdstr,dirname)
+% success = runGUISDAPremote(gfdstr,dirname,radar)
 %
-% A simple function for starting a guisdap instance in puhti.csc.fi
+% A simple function for starting a guisdap instance on a remote worker.
+%
+% NOTICE: this file does not be manually copied to to the workers. It is automatically copied by the batch command.
 %
 % INPUT:
 %   gfd_str   a string array that contains the contents of the gfd file to be used to start the analysi
@@ -14,11 +16,13 @@ function success = runGUISDAPpuhti(gfd_str,dirname)
 %             2: failed to run start_GUP
 %             3: failed to run go_on (the actual analysis)
 %
-% This function is run on puhti, there is another function that generates the calls in the local machine. 
+% This function is run on the worker, there is another function that generates the calls in the local machine. 
 %
 % IV 2022
 %
 
+    global result_path name_expr name_site
+    
     success = 0;
     
     % create the output directory and writet the gfd file there
@@ -37,11 +41,6 @@ function success = runGUISDAPpuhti(gfd_str,dirname)
         return
     end
 
-    % % path settings (temporary, hard-coded test version)
-    % addpath('/usr/local/guisdap9/anal')
-    % addpath('/usr/local/guisdap9/irbem')
-    % addpath('/home/ilkkav/Packages/MATLAB/BAFIM')
-
     try
         % this should be a modified version of start_GUP with clear all commented out from the beginning.
         start_GUP
@@ -58,4 +57,19 @@ function success = runGUISDAPpuhti(gfd_str,dirname)
         return
     end
 
+    % this would require about 11 GB of memory, while the GUISDAP part runs with less than 2 GB.
+    % should we call ELSPEC separately?
+    % % run ELSPEC
+    % try
+    %     % cd to a directory where we can write for sure
+    %     cd(fileparts(result_path))
+    %     % run ELSPEC
+    %     ElSpec('fitdir',result_path,'experiment',name_expr,'radar',radar,'recombmodel','SheehanGrFlipchem');
+    % catch
+    %     success = 4;
+    %     return
+    % end
+    
 end
+
+
