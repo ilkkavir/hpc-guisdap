@@ -14,5 +14,6 @@ figs=[ 0 0 0 0 0];
 extra=[ 'iono_model=''bafim_flipchem''                                                                              '
         'a_satch.do=0                                                                                             '
         'a_phasepush=0                                                                                            '
+        'Magic_const=0.00                                                                                         '
         '%analysis_control(1)=0.5                                                                                 '
         'fit_altitude(1:6,1:4)=[0 Inf .1 2.5e11;80 Inf .4 30;103 Inf .4 .05;0 0 0 0;80 Inf .2 2.5;150 400 .2 .01] '];
