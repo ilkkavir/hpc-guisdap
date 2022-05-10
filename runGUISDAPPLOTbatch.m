@@ -54,31 +54,11 @@ function jobs = runGUISDAPPLOTbatch(gfdfile,cluster,clusterpaths)
         disp([t1new t2new])
         
         % output directory name
-        dirname = fullfile(result_path,[ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ])
+        dirname = [ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ];
+        fname = fullfile(result_path,dirname,[dirname '_merged.mat'] );
 
-        % read the gfd file as a string array
-        gfd_str = readlines(gfdfile);    
-        iline = 1;
-        while iline <= length(gfd_str)
-            teststr = char(strtrim(gfd_str(iline)));
-            % the new start and end times
-            if length(teststr)>=2
-                if teststr(1:2)=='t1'
-                    gfd_str(iline) = string(['t1=[',datestr(t1new,'yyyy mm dd HH MM SS'),']']);
-                end
-                if teststr(1:2)=='t2'
-                    gfd_str(iline) = string(['t2=[',datestr(t2new,'yyyy mm dd HH MM SS'),']']);
-                end
-            end
-            % own output directory for each day
-            if length(teststr)>=11
-                if teststr(1:11)=='result_path'
-                    gfd_str(iline) = string(['result_path=','''',dirname,'''']);
-                end
-            end
-            iline = iline + 1;
-        end
-        jobs(ijob) = batch(cluster,@vizu_hpc,1,{dirname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        % start a batch job for the plotting
+        jobs(ijob) = batch(cluster,@vizu_hpc,1,{fname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
 
         % increment the job counter
         ijob = ijob + 1;

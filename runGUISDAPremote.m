@@ -57,6 +57,22 @@ function success = runGUISDAPremote(gfd_str,dirname,radar)
         return
     end
 
+    % merge very last output with the others
+    try
+        [merge_success mergefile] = merge_mat(result_path,true,true);
+    catch
+        success = 4;
+        return
+    end
+
+    % run bafim_smoother
+    try
+        bafim_smoother(mergefile);
+    catch
+        success = 5;
+        return
+    end
+
     % this would require about 11 GB of memory, while the GUISDAP part runs with less than 2 GB.
     % should we call ELSPEC separately?
     % % run ELSPEC

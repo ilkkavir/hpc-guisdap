@@ -32,6 +32,9 @@ persistent hds OLD_WHICH OLD_SCALE
 global height n_tot add_plot manylim plf_polen max_ppw vizufig
 global DATA_PATH LOCATION START_TIME END_TIME MESSAGE1 Y_TYPE
 global r_RECloc path_tmp path_GUP result_path webfile local owner allnames
+
+start_GUP
+
 nvargin=length(varargin);
 naction=1;
 if strcmp(action(naction,nvargin,varargin),'myb')
@@ -110,13 +113,13 @@ a2=action(naction+1,nvargin,varargin);
 a3=action(naction+2,nvargin,varargin);
 if isempty(act) || strcmp(lower(act),'verbose')
  if isempty(Time)
-  [Time,par2D,par1D,rpar2D]=load_param(DATA_PATH,PLOT_STATUS);
+  [Time,par2D,par1D,rpar2D]=load_param_hpc(DATA_PATH,PLOT_STATUS);
  end
  if ~isempty(axs), delete(axs), axs=[]; end
  if ~isempty(axc), delete(axc), axc=[]; end
  maxdy=Inf;		% Max diff in y stretch data points
 elseif strcmp(act,'update')
- [Time,par2D,par1D,rpar2D]=load_param(DATA_PATH,PLOT_STATUS,1);
+ [Time,par2D,par1D,rpar2D]=load_param_hpc(DATA_PATH,PLOT_STATUS,1);
  endtime=timeconv(END_TIME,'utc2mat');
  if (~REALT | REALT & timespan~=1) & ~isempty(Time) & Time(1,end)>endtime
   delete(axs); axs=[]; axc=[];
@@ -124,7 +127,7 @@ elseif strcmp(act,'update')
   while Time(2,end)>endtime, endtime=endtime+spantime/3; end
   START_TIME=timeconv(endtime-spantime,'mat2utc');
   END_TIME=timeconv(endtime,'mat2utc');
-  [Time,par2D,par1D,rpar2D]=load_param(DATA_PATH,PLOT_STATUS);
+  [Time,par2D,par1D,rpar2D]=load_param_hpc(DATA_PATH,PLOT_STATUS);
  end
  %set(0,'currentfig',vizufig)
 elseif strcmpi(act,'print') || strcmpi(act,'save')
@@ -600,7 +603,11 @@ if nargout
  end
 end
 
-pngfile = fullfile(DATA_PATH,sprintf('%d-%02d-%02d_%s@%s',START_TIME(1:3),name_expr,name_ant))
+if ~isdir(DATA_PATH)
+    pngfile = fullfile(fileparts(DATA_PATH),sprintf('%d-%02d-%02d_%s@%s',START_TIME(1:3),name_expr,name_ant))
+else
+    pngfile = fullfile(DATA_PATH,sprintf('%d-%02d-%02d_%s@%s',START_TIME(1:3),name_expr,name_ant))
+end
 %pngfile=sprintf('%sGup_%s.png',path_tmp,name_ant(1:3))
 drawnow
 saveas(gcf,pngfile,'png')
@@ -770,3 +777,43 @@ end
 if nargout>0
  varargout{1}=h0;
 end
+
+
+function [Time,par2D,par1D,rpar2D,err2D]=load_param_hpc(data_path,status,update)
+global name_expr r_RECloc name_ant name_strategy r_Magic_const myparams load_apriori rres ppres max_ppw r_XMITloc
+global allnames Leap
+persistent lastfile
+if nargin<3, lastfile=[]; end
+if nargin<2, status=[]; end
+if isempty(status), status=[0 Inf]; end
+if isempty(myparams), myparams=[1 2 4]; end
+if isempty(ppres), ppres=.25; end % pp resolution (km)
+if isempty(max_ppw), max_ppw=Inf; end % pp resolution (km)
+do_rpar=nargout==4;
+do_err=nargout==5;
+
+if isempty(strfind(data_path,'*')) && ~isdir(data_path)
+    [~,filename,ext] = fileparts(data_path); Leap=[];
+    if strcmp(ext,'.hdf5') && strcmp(filename(1:6),'EISCAT')
+        [Time,par2D,par1D,rpar2D,err2D]=load_param_hdf5(data_path);
+        return
+    elseif strcmp(ext,'.hdf5')
+        [Time,par2D,par1D,rpar2D,err2D]=load_param_madrigal(data_path,[],do_err);
+        dt=diff(Time)*86400; name_strategy=sprintf('%.0f',median(dt));
+        if std(dt)>10, name_strategy='ant'; end
+        return
+    else
+        try
+            [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,[],do_err);
+        catch
+            try
+                [Time,par2D,par1D,rpar2D,err2D]=load_param(fileparts(data_path),[],do_err);
+            catch
+                [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,[],do_err);
+            end
+        end            
+    end
+else
+    [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,status,update);
+end
+

@@ -62,11 +62,20 @@ function success = runELSPECremote(gfd_str,dirname,radar)
         % cd to a directory where we can write for sure
         cd(fileparts(result_path))
         % run ELSPEC
-        ElSpec('fitdir',result_path,'experiment',name_expr,'radar',radar,'recombmodel','SheehanGrFlipchem','plotres',0);
+        out = ElSpec('fitdir',result_path,'experiment',name_expr,'radar',radar,'recombmodel','SheehanGrFlipchem','plotres',0);
     catch
         success = 4;
         return
     end
-    
+
+    % plot the results
+    try
+        cd(fileparts(resultpath))
+        ElSpecPlot(out,'visible','off')
+        saveas(gcf,result_path,'png')
+    catch
+        success = 5;
+        return
+    end
 end
 
