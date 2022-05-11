@@ -124,10 +124,10 @@ function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,MagicConstFile,hdf5
         if exist('extra','var')
             dimextra = size(extra);
             for iline = 1 : length(gfd_str)
-                teststr = char(strtrim(gfd_str(iline)))
+                teststr = char(strtrim(gfd_str(iline)));
                 if length(teststr)>=5
                     if teststr(1:5)=='extra'
-                        extraline = iline
+                        extraline = iline;
                         break
                     end
                 end
@@ -146,7 +146,7 @@ function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,MagicConstFile,hdf5
             end
         end
 
-        jobs(ijob) = batch(cluster,@runGUISDAPremote,1,{gfd_str,dirname,sitestr},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        jobs(ijob) = batch(cluster,@runGUISDAPremote,1,{gfd_str,dirname,sitestr,ijob},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
 
         % increment the job counter
         ijob = ijob + 1;

@@ -1,4 +1,4 @@
-function success = runGUISDAPremote(gfd_str,dirname,radar)
+function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
 %
 % success = runGUISDAPremote(gfdstr,dirname,radar)
 %
