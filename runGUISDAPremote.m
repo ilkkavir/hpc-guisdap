@@ -51,6 +51,8 @@ function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
 
     % start the analysis
     try
+        % must be a modified go_on with go_die=0 always
+        % should have merge_output_files=true in apriorimodel_bafim_flipchem.
         go_on(char(fname));
     catch
         success = 3;
@@ -67,7 +69,7 @@ function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
 
     % run bafim_smoother
     try
-        bafim_smoother(mergefile);
+        bafim_smoother(mergefile)
     catch
         success = 5;
         return

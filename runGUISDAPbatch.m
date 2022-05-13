@@ -54,6 +54,7 @@ function jobs = runGUISDAPbatch(gfdfile,cluster,clusterpaths,MagicConstFile,hdf5
     while t1new < t2datetime
         % End of day + burnin (also in the end for quality control)
         t2new = dateshift(t1new+hours(23),'end','day') + minutes(overlap_minutes);
+        %t2new = dateshift(t1new+hours(23),'start','day') + minutes(overlap_minutes); % testing with a short analysis
         disp([t1new t2new])
         
         % output directory name
