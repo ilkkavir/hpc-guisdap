@@ -804,7 +804,7 @@ if isempty(strfind(data_path,'*')) && ~isdir(data_path)
         return
     else
         try
-            [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,[],do_err);
+            [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,[],do_err)
         catch
             try
                 [Time,par2D,par1D,rpar2D,err2D]=load_param(fileparts(data_path),[],do_err);

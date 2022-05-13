@@ -25,7 +25,7 @@ function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
     
     success = 0;
     
-    % create the output directory and writet the gfd file there
+    % create the output directory and write the gfd file there
     try
         if ~exist(dirname,'dir')
             mkdir(dirname);
@@ -59,7 +59,7 @@ function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
 
     % merge very last output with the others
     try
-        [merge_success mergefile] = merge_mat(result_path,true,true);
+        [merge_success mergefile] = merge_mat(result_path,true,true)
     catch
         success = 4;
         return
