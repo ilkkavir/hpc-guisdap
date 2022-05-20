@@ -54,7 +54,7 @@ function jobs = runGUISDAPPLOTbatch(gfdfile,cluster,clusterpaths)
         disp([t1new t2new])
         
         % output directory name
-        dirname = [ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ];
+        dirname = fullfile(result_path,[ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ])
         %        fname = fullfile(result_path,dirname,[dirname '_merged.mat'] );
 
         % start a batch job for the plotting
