@@ -55,10 +55,11 @@ function jobs = runGUISDAPPLOTbatch(gfdfile,cluster,clusterpaths)
         
         % output directory name
         dirname = [ datestr(t1new+diff([t1new,t2new])/2 ,'yyyy-mm-dd') '_' name_expr '_' num2str(intper) '@' sitestr ];
-        fname = fullfile(result_path,dirname,[dirname '_merged.mat'] );
+        %        fname = fullfile(result_path,dirname,[dirname '_merged.mat'] );
 
         % start a batch job for the plotting
-        jobs(ijob) = batch(cluster,@vizu_hpc,1,{fname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        %        jobs(ijob) = batch(cluster,@vizu_hpc,1,{fname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        jobs(ijob) = batch(cluster,@vizu_hpc,1,{dirname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
 
         % increment the job counter
         ijob = ijob + 1;

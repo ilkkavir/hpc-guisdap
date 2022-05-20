@@ -792,6 +792,7 @@ if isempty(max_ppw), max_ppw=Inf; end % pp resolution (km)
 do_rpar=nargout==4;
 do_err=nargout==5;
 
+
 if isempty(strfind(data_path,'*')) && ~isdir(data_path)
     [~,filename,ext] = fileparts(data_path); Leap=[];
     if strcmp(ext,'.hdf5') && strcmp(filename(1:6),'EISCAT')
@@ -803,17 +804,55 @@ if isempty(strfind(data_path,'*')) && ~isdir(data_path)
         if std(dt)>10, name_strategy='ant'; end
         return
     else
-        try
-            [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,[],do_err);
-        catch
-            try
-                [Time,par2D,par1D,rpar2D,err2D]=load_param(fileparts(data_path),[],do_err);
-            catch
-                [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,[],do_err);
-            end
-        end            
+        [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,status);
     end
+    % else
+    %     try
+    %         [Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,[],do_err);
+    %     catch
+    %         % actually, we should never end up here...
+    %         try
+    %             [Time,par2D,par1D,rpar2D,err2D]=load_param(fileparts(data_path),[],do_err);
+    %         catch
+    %             [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,[],do_err);
+    %         end
+    %     end            
+    %    end
 else
-    [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,status,update);
+    % read all files, both normal and merged
+    [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,status);
+    [Timem,par2Dm,par1Dm,rpar2Dm,err2Dm]=load_param_merged(data_path,status);
+
+    % merge the outputs
+    Time = [Time,Timem];
+    par2D = [par2D,par2Dm];
+    par1D = [par1D;par1Dm];
+    rpar2D = [rpar2D,rpar2Dm];
+    err2D = [err2D,err2Dm];
+    disp(size(err2D))
+
+    % find unique times
+    [~,iunique] = unique(Time(1,:));
+    Time = Time(:,iunique);
+    par2D = par2D(:,iunique,:);
+    par1D = par1D(iunique,:);
+    if ~isempty(rpar2D)
+        rpar2D = rpar2D(:,iunique,:);
+    end
+    if ~isempty(err2D)
+        err2D = err2D(:,iunique,:);
+    end
+
+    % sort with increasing time
+    [~,isort] = sort(Time(1,:));
+    Time = Time(:,isort);
+    par2D = par2D(:,isort,:);
+    par1D = par1D(isort,:);
+    if ~isempty(rpar2D)
+        rpar2D = rpar2D(:,isort,:);
+    end
+    if ~isempty(err2D)
+        err2D = err2D(:,isort,:);
+    end
 end
 

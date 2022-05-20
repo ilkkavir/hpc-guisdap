@@ -1,4 +1,4 @@
-function[Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,status,update)
+function[Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,status)
 % Function to read the plasma parameters from a merged matlab file created by merge_mat in BAFIM
 %
 % [Time,par2D,par1D,rpar2D,err2D]=load_param(data_path,status,update)
@@ -9,17 +9,35 @@ function[Time,par2D,par1D,rpar2D,err2D]=load_param_merged(data_path,status,updat
 %
 global name_expr r_RECloc name_ant name_strategy r_Magic_const myparams load_apriori rres ppres max_ppw r_XMITloc
 global allnames Leap
-persistent lastfile
-if nargin<3, lastfile=[]; end
 if nargin<2, status=[]; end
 if isempty(status), status=[0 Inf]; end
 if isempty(myparams), myparams=[1 2 4]; end
 if isempty(ppres), ppres=.25; end % pp resolution (km)
 if isempty(max_ppw), max_ppw=Inf; end % pp resolution (km)
-do_rpar=nargout==4;
-do_err=nargout==5;
+do_rpar=nargout==3;
+do_err=nargout==4;
 
 
+
+if exist(data_path,'dir')
+    files = dir(fullfile(data_path,'GUISDAP*.mat'));
+    Time = [];
+    par2D = [];
+    par1D = [];
+    rpar2D = [];
+    err2D = [];
+    for k=1:length(files)
+        [Timem,par2Dm,par1Dm,rpar2Dm,err2Dm]=load_param_merged(fullfile(files(k).folder,files(k).name),status);
+        if ~isempty(Timem)
+            Time = [Time,Timem];
+            par2D = [par2D,par2Dm];
+            par1D = [par1D;par1Dm];
+            rpar2D = [rpar2D,rpar2Dm];
+            err2D = [err2D,err2Dm];
+        end
+    end
+    return
+end
 
 
 fnames = sort(fieldnames(matfile(data_path)));
@@ -44,7 +62,6 @@ r_Tsys=[]; r_pp=[]; rres=[]; name_sig=''; name_strategy='';
 [r_status,r_res,r_range,r_h,r_dp]=deal(zeros(0,1));
 n_tot=n;
 memwarn=0;
-lastfile=list(n);
 re=6370;
 npar2D=9; nrpar2D=3; nerr2D=npar2D-4;
 Time=zeros(2,n_tot);

@@ -11,7 +11,7 @@ function success = runELSPECremote(gfd_str,dirname,radar)
 %
 % INPUT:
 %   gfd_str   a string array that contains the contents of the gfd file to be used to start the analysi
-%   dirname   name of the directory where the gdf file will be written
+%   dirname   name of the directory where the gdf files will be written
 %
 % OUTPUT:
 %   success   0: successful analysis
@@ -70,7 +70,8 @@ function success = runELSPECremote(gfd_str,dirname,radar)
 
     % plot the results
     try
-        cd(fileparts(resultpath))
+        %        cd(fileparts(resultpath))
+        cd(resultpath)
         ElSpecPlot(out,'visible','off')
         saveas(gcf,result_path,'png')
     catch

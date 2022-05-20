@@ -69,7 +69,8 @@ function success = runGUISDAPremote(gfd_str,dirname,radar,gup_ID)
 
     % run bafim_smoother
     try
-        bafim_smoother(mergefile)
+        %        bafim_smoother(mergefile)
+        bafim_smoother(result_path,true)
     catch
         success = 5;
         return
