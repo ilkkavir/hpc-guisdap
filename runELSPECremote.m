@@ -70,10 +70,11 @@ function success = runELSPECremote(gfd_str,dirname,radar)
 
     % plot the results
     try
-        %        cd(fileparts(resultpath))
-        cd(resultpath)
+        cd(fileparts(result_path))
         ElSpecPlot(out,'visible','off')
-        saveas(gcf,result_path,'png')
+        [a,b,c]=fileparts(out.outputfile);
+        plotfile = fullfile(a,b);
+        saveas(gcf,plotfile,'png')
     catch
         success = 5;
         return
