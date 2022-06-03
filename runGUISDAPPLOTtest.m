@@ -5,5 +5,6 @@ c.AdditionalProperties.MemUsage='15g'
 c.AdditionalProperties.WallTime='2:0:0'
 c.AdditionalProperties.AccountName='project_2005574'
 
-jobsPLOT = runGUISDAPPLOTbatch('gfd_setup_200706_MPStest.m',c,{'/projappl/project_2005574/guisdap9/anal','/projappl/project_2005574/guisdap9/irbem','/projappl/project_2005574/hpc-guisdap'})
+jobsPLOT = runGUISDAPPLOTbatch('gfd_setup_2007_0928_1009_MPS.m',c,{'/projappl/project_2005574/guisdap9/anal','/projappl/project_2005574/guisdap9/irbem','/projappl/project_2005574/hpc-guisdap'})
+%jobsPLOT = runGUISDAPPLOTbatch('gfd_setup_200706_MPStest.m',c,{'/projappl/project_2005574/guisdap9/anal','/projappl/project_2005574/guisdap9/irbem','/projappl/project_2005574/hpc-guisdap'})
 

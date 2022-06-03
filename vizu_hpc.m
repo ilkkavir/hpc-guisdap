@@ -36,6 +36,12 @@ global r_RECloc path_tmp path_GUP result_path webfile local owner allnames
 start_GUP
 
 nvargin=length(varargin);
+
+% IV 20220603, must call with gup_ID as the last argument
+gup_ID = action(nvargin,nvargin,varargin)
+nvargin = nvargin - 1;
+close all
+
 naction=1;
 if strcmp(action(naction,nvargin,varargin),'myb')
   varargout(1)={myb(gcf,action(naction+1,nvargin,varargin),action(naction+2,nvargin,varargin))};
@@ -249,6 +255,7 @@ if REALT
  SCALE(6,:)=[-400 400];
  SCALE(2,:)=[80 Alt2];
 else
+    manylim = Inf; % IV 20220603
  if any(par1D(:,2)<75), SCALE(6,:)=[-500 500]; end
  if all(par1D(:,2)<35), SCALE(6,:)=[-1000 1000]; end
  if all(par1D(:,2)>75)
