@@ -33,7 +33,6 @@ global height n_tot add_plot manylim plf_polen max_ppw vizufig
 global DATA_PATH LOCATION START_TIME END_TIME MESSAGE1 Y_TYPE
 global r_RECloc path_tmp path_GUP result_path webfile local owner allnames
 
-start_GUP
 
 nvargin=length(varargin);
 
@@ -41,6 +40,8 @@ nvargin=length(varargin);
 gup_ID = action(nvargin,nvargin,varargin)
 nvargin = nvargin - 1;
 close all
+
+start_GUP
 
 naction=1;
 if strcmp(action(naction,nvargin,varargin),'myb')

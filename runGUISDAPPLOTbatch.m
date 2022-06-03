@@ -59,7 +59,7 @@ function jobs = runGUISDAPPLOTbatch(gfdfile,cluster,clusterpaths)
 
         % start a batch job for the plotting
         %        jobs(ijob) = batch(cluster,@vizu_hpc,1,{fname,' '},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
-        jobs(ijob) = batch(cluster,@vizu_hpc,1,{dirname,' ',ijob},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false);
+        jobs(ijob) = batch(cluster,@vizu_hpc,1,{dirname,' ',ijob},'AdditionalPaths',clusterpaths,'AutoAddClientPath',false,'AutoAttachFiles',false,'CurrentFolder','.');
 
         % increment the job counter
         ijob = ijob + 1;
